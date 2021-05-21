@@ -4,3 +4,10 @@ C:\Users\Земфира\source\repos\Converter\Converter\bin\Release\Converter.p
 C:\Users\Земфира\source\repos\Converter\Converter\obj\Release\Converter.csproj.CoreCompileInputs.cache
 C:\Users\Земфира\source\repos\Converter\Converter\obj\Release\Converter.exe
 C:\Users\Земфира\source\repos\Converter\Converter\obj\Release\Converter.pdb
+C:\Users\Земфира\source\repos\Converter\Converter\Converter\bin\Release\Converter.exe.config
+C:\Users\Земфира\source\repos\Converter\Converter\Converter\bin\Release\Converter.exe
+C:\Users\Земфира\source\repos\Converter\Converter\Converter\bin\Release\Converter.pdb
+C:\Users\Земфира\source\repos\Converter\Converter\Converter\obj\Release\Converter.csprojAssemblyReference.cache
+C:\Users\Земфира\source\repos\Converter\Converter\Converter\obj\Release\Converter.csproj.CoreCompileInputs.cache
+C:\Users\Земфира\source\repos\Converter\Converter\Converter\obj\Release\Converter.exe
+C:\Users\Земфира\source\repos\Converter\Converter\Converter\obj\Release\Converter.pdb

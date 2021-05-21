@@ -3,6 +3,7 @@ using System.Drawing;
 using static System.Math;
 using Float = System.Single;
 using Colour = System.Drawing.Color;
+using ConsoleColour = System.ConsoleColor;
 
 namespace Converter
 {
@@ -42,6 +43,34 @@ namespace Converter
             }
 
             return image;
+        }
+
+        /// <summary>
+        /// Метод для получения предмета из кортежа по указанному индексу.
+        /// </summary>
+        /// <param name="tuple">Кортеж, из которого необходимо получить элемент.</param>
+        /// <param name="index">Индекс, по которому необходимо получить элемент.</param>
+        /// <returns>Элемент кортежа с указанным индексом.</returns>
+        public static Double GetItemOnIndex (this (Double, Double, Double) tuple, Int32 index)
+        {
+            switch (index)
+            {
+                case 0:
+                    return tuple.Item1;
+
+                case 1:
+                    return tuple.Item2;
+
+                case 2:
+                    return tuple.Item3;
+
+                default:
+                    Console.ForegroundColor = ConsoleColour.DarkRed;
+                    Console.WriteLine("\nОБНАРУЖЕНА ОШИБКА В РАСШИРЕНИИ.\n");
+                    Console.ResetColor();
+
+                    return 0;
+            }
         }
     }
 }

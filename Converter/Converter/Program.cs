@@ -2,8 +2,10 @@
 using System.IO;
 using System.Linq;
 using System.Drawing;
+using System.Drawing.Imaging;
 using System.Threading.Tasks;
 using System.Collections.Generic;
+using System.Runtime.InteropServices;
 using Bool = System.Boolean;
 using Colour = System.Drawing.Color;
 using ConsoleColour = System.ConsoleColor;
@@ -31,6 +33,7 @@ namespace Converter
         /// <param name="args">Аргументы сценария.</param>
         static void Main (String[] args)
         {
+            Console.Title = "Конвертер Изображений.";
             String choise = "";
 
             //Добавление значений в словарь с возможными действиями.
@@ -40,6 +43,8 @@ namespace Converter
                 actions.Add("Ч", "Очистка консоли.");
                 actions.Add("О", "Возвращение к оригинальному изображению.");
                 actions.Add("С", "Сохранение измененного изображения.");
+                actions.Add("А", "Вывод информации о текущем алгоритме конвертации.");
+                actions.Add("С/А", "Смена алгоритма преобразования изображения.");
                 actions.Add("П/Д", "Смена активного изображения на другое.");
                 actions.Add("И/Р", "Изменение размеров активного изображения.");
                 actions.Add("Ч/Б", "Перевод в Черно-Белый формат без сохранения изображения.");
@@ -87,7 +92,10 @@ namespace Converter
         static Converter InitializeNewConverter ()
         {
             Console.Write("\nВведите путь к изображению, которое Вы хотите изменить: ");
-            image = new Converter(Console.ReadLine());
+            String path = Console.ReadLine();
+
+            Console.Write("\nИспользовать Быстрый Алгоритм при работе с изображением (Y/N)? ");
+            image = new Converter(path, Console.ReadKey().KeyChar == 'Y');
 
             while (!image.Ready)
             {
@@ -100,7 +108,7 @@ namespace Converter
             }
 
             Console.ForegroundColor = ConsoleColour.Green;
-            Console.WriteLine("\n\nИзображение готово к работе!");
+            Console.WriteLine("\n\n\nИзображение готово к работе!");
             Console.ResetColor();
 
             return image;
@@ -113,7 +121,7 @@ namespace Converter
         {
             String currentAction;
 
-            Console.Write("\nВыберите действие, которое необходимо провести с изображением или программой: ");
+            Console.Write("\n\nВыберите действие, которое необходимо провести с изображением или программой: ");
             currentAction = Console.ReadLine().ToUpper();
 
             ShowInfo(currentAction);
@@ -205,6 +213,20 @@ namespace Converter
                 image.ResizeImage(level);
             }
 
+            else if (currentAction == "С/А")
+            {
+                Console.Write($"Текущий используемый алгоритм: {(image.FastAlgorithm ? "Быстрый." : "Обычный.")}.\nПереключить его (Y/N)? ");
+                if (Console.ReadKey().KeyChar == 'Y')
+                {
+                    image.ChangeAlgorithm();
+                }
+            }
+
+            else if (currentAction == "А")
+            {
+                Console.Write($"Текущий алгоритм: {(image.FastAlgorithm ? "Быстрый" : "Обычный")}.");
+            }
+
             else if (currentAction == "С")
             {
                 Console.Write("Введите путь, по которому будет сохранено изображение (пустой ввод сохранит файл в папку с оригиналом): ");
@@ -275,6 +297,8 @@ namespace Converter
                 Console.WriteLine("Введите \"A/I/П\", чтобы вывести в консоль ASCii-представление текущего изображения.");
                 Console.WriteLine("Введите \"A/С\", чтобы сохранить ASCii-представление текущего изображения.");
                 Console.WriteLine("Введите \"П/Д\", чтобы сменить активное изображение.");
+                Console.WriteLine("Введите \"С/А\", чтобы сменить используемый Алгоритм конвертации.");
+                Console.WriteLine("Введите \"А\", чтобы вывести на консоль текущий используемый Алгоритм конвертации.");
                 Console.WriteLine("Введите \"О\", чтобы сбросить все изменения изображения.");
                 Console.WriteLine("Введите \"С\", чтобы сохранить измененное изображение.");
                 Console.WriteLine("Введите \"Ч\", чтобы очистить консоль.");
@@ -354,6 +378,11 @@ namespace Converter
         /// Поле, содержащее Логическое Значение, отвечающее за то, что экземпляр класса готов к работе.
         /// </summary>
         Bool ready;
+
+        /// <summary>
+        /// Поле, отвечающее за то, будет ли использоваться Быстрый Алгоритм конвертации при работе с изображениями.
+        /// </summary>
+        Bool fastAlg = false;
 
         /// <summary>
         /// Постоянная, содержащая модификатор спектра Red для получения Сепии.
@@ -451,6 +480,22 @@ namespace Converter
         }
 
         /// <summary>
+        /// Свойство, отвечающее за то, будет ли использоваться Быстрый Алгоритм конвертации при работе с изображениями. 
+        /// </summary>
+        public Bool FastAlgorithm
+        {
+            get
+            {
+                return fastAlg;
+            }
+
+            private set
+            {
+                fastAlg = value;
+            }
+        }
+
+        /// <summary>
         /// Свойство, содержащее Полное Имя оригинального изображения.
         /// </summary>
         public String FileName
@@ -470,12 +515,14 @@ namespace Converter
         /// Конструктор класса.
         /// </summary>
         /// <param name="pathToFile">Абсолютный путь к изображению.</param>
-        public Converter (String pathToFile)
+        /// <param name="useFastAlgorithm">Отвечает за то, будет ли применяться Быстрый Алгоритм конвертации изображения.</param>>
+        public Converter (String pathToFile, Bool useFastAlgorithm)
         {
             if (File.Exists(pathToFile) && allowedFiles.Contains(Path.GetExtension(pathToFile)))
             {
                 Image = Bitmap.FromFile(pathToFile) as Bitmap;
                 FileName = Path.GetFileName(pathToFile);
+                fastAlg = useFastAlgorithm;
                 fullPath = pathToFile;
                 ASCiiImage = null;
                 NewImage = Image;
@@ -572,13 +619,45 @@ namespace Converter
         /// </summary>
         public void GrayGamma ()
         {
-            for (int i = 0; i < Image.Width; i++)
+            if (FastAlgorithm)
             {
-                for (int j = 0; j < Image.Height; j++)
-                {
-                    Int32 newColour = (Image.GetPixel(i, j).R + Image.GetPixel(i, j).G + Image.GetPixel(i, j).B) / 3;
+                BitmapData data = Image.LockBits(new Rectangle(0, 0, Image.Width, Image.Height), ImageLockMode.ReadWrite, PixelFormat.Format24bppRgb);
+                Byte[] imageBytesMap = new Byte[Image.Width * Image.Height * 3];
 
-                    NewImage.SetPixel(i, j, Colour.FromArgb(newColour, newColour, newColour));
+                Marshal.Copy(data.Scan0, imageBytesMap, 0, imageBytesMap.Length);
+
+                for (int i = 0; i < imageBytesMap.Length; i += 3)
+                {
+                    Int32 channelColours = 0;
+
+                    for (int j = 0; j < 3; j++)
+                    {
+                        channelColours += imageBytesMap[i + j];
+                    }
+
+                    Byte newColour = Convert.ToByte(channelColours / 3);
+
+                    for (int j = 0; j < 3; j++)
+                    {
+                        imageBytesMap[i + j] = newColour;
+                    }
+                }
+
+                Marshal.Copy(imageBytesMap, 0, data.Scan0, imageBytesMap.Length);
+
+                Image.UnlockBits(data);
+            }
+
+            else
+            {
+                for (int i = 0; i < Image.Width; i++)
+                {
+                    for (int j = 0; j < Image.Height; j++)
+                    {
+                        Int32 newColour = (Image.GetPixel(i, j).R + Image.GetPixel(i, j).G + Image.GetPixel(i, j).B) / 3;
+
+                        NewImage.SetPixel(i, j, Colour.FromArgb(newColour, newColour, newColour));
+                    }
                 }
             }
 
@@ -601,15 +680,38 @@ namespace Converter
         /// </summary>
         public void NegativeGamma ()
         {
-            for (int i = 0; i < Image.Width; i++)
+            if (FastAlgorithm)
             {
-                for (int j = 0; j < Image.Height; j++)
-                {
-                    Int32 r = 255 - Image.GetPixel(i, j).R;
-                    Int32 g = 255 - Image.GetPixel(i, j).G;
-                    Int32 b = 255 - Image.GetPixel(i, j).B;
+                BitmapData data = Image.LockBits(new Rectangle(0, 0, Image.Width, Image.Height), ImageLockMode.ReadWrite, PixelFormat.Format24bppRgb);
+                Byte[] imageBytesMap = new Byte[Image.Width * Image.Height * 3];
 
-                    NewImage.SetPixel(i, j, Colour.FromArgb(r, g, b));
+                Marshal.Copy(data.Scan0, imageBytesMap, 0, imageBytesMap.Length);
+
+                for (int i = 0; i <imageBytesMap.Length; i += 3)
+                {
+                    for (int j = 0; j < 3; j++)
+                    {
+                        imageBytesMap[i + j] = Convert.ToByte(255 - imageBytesMap[i + j]);
+                    }
+                }
+
+                Marshal.Copy(imageBytesMap, 0, data.Scan0, imageBytesMap.Length);
+
+                Image.UnlockBits(data);
+            }
+
+            else
+            {
+                for (int i = 0; i < Image.Width; i++)
+                {
+                    for (int j = 0; j < Image.Height; j++)
+                    {
+                        Int32 r = 255 - Image.GetPixel(i, j).R;
+                        Int32 g = 255 - Image.GetPixel(i, j).G;
+                        Int32 b = 255 - Image.GetPixel(i, j).B;
+
+                        NewImage.SetPixel(i, j, Colour.FromArgb(r, g, b));
+                    }
                 }
             }
 
@@ -636,15 +738,42 @@ namespace Converter
             //Данный метод сам изменит состояние Свойства "Changed" на true, так что здесь оно не изменяется.
             GrayGamma();
 
-            for (int i = 0; i < image.Width; i++)
+            if (FastAlgorithm)
             {
-                for (int j = 0; j < image.Height; j++)
-                {
-                    Int32 r = Convert.ToInt32(image.GetPixel(i, j).R * sepiaModR);
-                    Int32 g = Convert.ToInt32(image.GetPixel(i, j).G * sepiaModG);
-                    Int32 b = Convert.ToInt32(image.GetPixel(i, j).B * sepiaModB);
+                BitmapData data = Image.LockBits(new Rectangle(0, 0, Image.Width, Image.Height), ImageLockMode.ReadWrite, PixelFormat.Format24bppRgb);
+                (Double, Double, Double) sepiaModifiers = (sepiaModR, sepiaModG, sepiaModB); 
+                Byte[] imageByteMap = new Byte[Image.Width * Image.Height * 3];
 
-                    image.SetPixel(i, j, Colour.FromArgb(r, g, b));
+                Marshal.Copy(data.Scan0, imageByteMap, 0, imageByteMap.Length);
+
+                for (int i = 0; i < imageByteMap.Length; i += 3)
+                {
+                    for (int j = 0; j < 3; j++)
+                    {
+                        //Карта байтов, которую мы получили является "инвертированной".
+                        //Иными словами, значения цветов идут в таком порядке: Blue -> Green -> Red.
+                        //Соответственно, чтобы получить "правильную" Сепию, нам нужно получать инвертированные индексы:
+                        imageByteMap[i + j] = Convert.ToByte(imageByteMap[i + j] * sepiaModifiers.GetItemOnIndex(2 - j));
+                    }
+                }
+
+                Marshal.Copy(imageByteMap, 0, data.Scan0, imageByteMap.Length);
+
+                Image.UnlockBits(data);
+            }
+
+            else
+            {
+                for (int i = 0; i < image.Width; i++)
+                {
+                    for (int j = 0; j < image.Height; j++)
+                    {
+                        Int32 r = Convert.ToInt32(image.GetPixel(i, j).R * sepiaModR);
+                        Int32 g = Convert.ToInt32(image.GetPixel(i, j).G * sepiaModG);
+                        Int32 b = Convert.ToInt32(image.GetPixel(i, j).B * sepiaModB);
+
+                        image.SetPixel(i, j, Colour.FromArgb(r, g, b));
+                    }
                 }
             }
         }
@@ -835,6 +964,14 @@ namespace Converter
                     Console.ResetColor();
                 }
             }
+        }
+
+        /// <summary>
+        /// Метод для смены используемого алгоритма.
+        /// </summary>
+        public void ChangeAlgorithm ()
+        {
+            FastAlgorithm = !FastAlgorithm;
         }
 
         /// <summary>
