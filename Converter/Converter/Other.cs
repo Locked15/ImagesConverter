@@ -12,16 +12,16 @@ namespace Converter
     /// </summary>
     public static class Other
     {
-       /// <summary>
-       /// Метод для получения Индекса ASCii-массива по цвету.
-       /// </summary>
-       /// <param name="value">Ключевое значение.</param>
-       /// <param name="begin1">Значение начала расчета.</param>
-       /// <param name="end1">Значение окончания первого расчета.</param>
-       /// <param name="begin2">Значение начала вторичного расчета.</param>
-       /// <param name="end2">Значение окончания всего расчета.</param>
-       /// <returns>Индекс для ASCii-массива.</returns>
-        public static Float GetIndex (this Colour colour, Float value, Float begin1, Float end1, Float begin2, Float end2)
+        /// <summary>
+        /// Метод для получения Индекса ASCii-массива по цвету.
+        /// </summary>
+        /// <param name="value">Ключевое значение.</param>
+        /// <param name="begin1">Значение начала расчета.</param>
+        /// <param name="end1">Значение окончания первого расчета.</param>
+        /// <param name="begin2">Значение начала вторичного расчета.</param>
+        /// <param name="end2">Значение окончания всего расчета.</param>
+        /// <returns>Индекс для ASCii-массива.</returns>
+        public static Float GetIndex(this Colour colour, Float value, Float begin1, Float end1, Float begin2, Float end2)
         {
             return (value - begin1) / (end1 - begin1) * (end2 - begin2) + begin2;
         }
@@ -32,7 +32,7 @@ namespace Converter
         /// <param name="image">Экземпляр класса "Bitmap", от которого вызывается метод.</param>
         /// <param name="scaleLevel">Уровень скалирования изображения. Чем больше, тем шире будет изображение.</param>>
         /// <returns>Изображение с измененным размером.</returns>
-        public static Bitmap Resize (this Bitmap image, Double scaleLevel)
+        public static Bitmap Resize(this Bitmap image, Double scaleLevel)
         {
             Double width = 400;
             Double height = Round(image.Height / scaleLevel * (width / image.Width), 3);
@@ -51,7 +51,7 @@ namespace Converter
         /// <param name="tuple">Кортеж, из которого необходимо получить элемент.</param>
         /// <param name="index">Индекс, по которому необходимо получить элемент.</param>
         /// <returns>Элемент кортежа с указанным индексом.</returns>
-        public static Double GetItemOnIndex (this (Double, Double, Double) tuple, Int32 index)
+        public static Double GetItemOnIndex(this (Double, Double, Double) tuple, Int32 index)
         {
             switch (index)
             {

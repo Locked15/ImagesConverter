@@ -31,7 +31,7 @@ namespace Converter
         /// Точка входа в программу.
         /// </summary>
         /// <param name="args">Аргументы сценария.</param>
-        static void Main (String[] args)
+        static void Main(String[] args)
         {
             Console.Title = "Конвертер Изображений.";
             String choise = "";
@@ -89,7 +89,7 @@ namespace Converter
         /// Метод для создания нового экземпляра класса "Converter".
         /// </summary>
         /// <returns>Экземпляр класса "Converter", готовый к работе.</returns>
-        static Converter InitializeNewConverter ()
+        static Converter InitializeNewConverter()
         {
             Console.Write("\nВведите путь к изображению, которое Вы хотите изменить: ");
             String path = Console.ReadLine();
@@ -117,7 +117,7 @@ namespace Converter
         /// <summary>
         /// Метод для выбора действия с изображением.
         /// </summary>
-        static void MakeAction ()
+        static void MakeAction()
         {
             String currentAction;
 
@@ -215,7 +215,7 @@ namespace Converter
 
             else if (currentAction == "С/А")
             {
-                Console.Write($"Текущий используемый алгоритм: {(image.FastAlgorithm ? "Быстрый." : "Обычный.")}.\nПереключить его (Y/N)? ");
+                Console.Write($"Текущий используемый алгоритм: {(image.FastAlgorithm ? "Быстрый." : "Обычный.")}\nПереключить его (Y/N)? ");
                 if (Console.ReadKey().KeyChar == 'Y')
                 {
                     image.ChangeAlgorithm();
@@ -309,7 +309,7 @@ namespace Converter
         /// Метод для вывода информации о выбранном пользователем действии.
         /// </summary>
         /// <param name="chosenAction">Выбранное пользователем действие.</param>>
-        static void ShowInfo (String chosenAction)
+        static void ShowInfo(String chosenAction)
         {
             try
             {
@@ -516,7 +516,7 @@ namespace Converter
         /// </summary>
         /// <param name="pathToFile">Абсолютный путь к изображению.</param>
         /// <param name="useFastAlgorithm">Отвечает за то, будет ли применяться Быстрый Алгоритм конвертации изображения.</param>>
-        public Converter (String pathToFile, Bool useFastAlgorithm)
+        public Converter(String pathToFile, Bool useFastAlgorithm)
         {
             if (File.Exists(pathToFile) && allowedFiles.Contains(Path.GetExtension(pathToFile)))
             {
@@ -549,7 +549,7 @@ namespace Converter
         /// Метод для смены активного изображения у экземпляра класса.
         /// </summary>
         /// <param name="newPathToImage">Абсолютный Путь к новому изображению.</param>
-        public void ChangeImage (String newPathToImage)
+        public void ChangeImage(String newPathToImage)
         {
             if (File.Exists(newPathToImage) && allowedFiles.Contains(Path.GetExtension(newPathToImage)))
             {
@@ -588,7 +588,7 @@ namespace Converter
         /// Метод для изменения размеров изображения и их скалирования.
         /// </summary>
         /// <param name="level">Степень изменения размера изображения.</param>>
-        public void ResizeImage (Double level)
+        public void ResizeImage(Double level)
         {
             if (level < 0.5 || level > 2.25)
             {
@@ -617,7 +617,7 @@ namespace Converter
         /// <summary>
         /// Метод для преобразования изображения в черно-белый цвет.
         /// </summary>
-        public void GrayGamma ()
+        public void GrayGamma()
         {
             if (FastAlgorithm)
             {
@@ -668,7 +668,7 @@ namespace Converter
         /// Метод для преобразования изображения в черно-белый цвет.
         /// </summary>
         /// <param name="pathToSave">Абсолютный путь, по которому будет сохранено изображение.</param>
-        public void GrayGamma (String pathToSave)
+        public void GrayGamma(String pathToSave)
         {
             GrayGamma();
 
@@ -678,7 +678,7 @@ namespace Converter
         /// <summary>
         /// Метод для преобразования изображения в Негатив.
         /// </summary>
-        public void NegativeGamma ()
+        public void NegativeGamma()
         {
             if (FastAlgorithm)
             {
@@ -687,7 +687,7 @@ namespace Converter
 
                 Marshal.Copy(data.Scan0, imageBytesMap, 0, imageBytesMap.Length);
 
-                for (int i = 0; i <imageBytesMap.Length; i += 3)
+                for (int i = 0; i < imageBytesMap.Length; i += 3)
                 {
                     for (int j = 0; j < 3; j++)
                     {
@@ -722,7 +722,7 @@ namespace Converter
         /// Метод для преобразования изображения в Негатив.
         /// </summary>
         /// <param name="pathToSave">Абсолютный путь, по которому будет сохранено изображение.</param>
-        public void NegativeGamma (String pathToSave)
+        public void NegativeGamma(String pathToSave)
         {
             NegativeGamma();
 
@@ -732,7 +732,7 @@ namespace Converter
         /// <summary>
         /// Метод для преобразования изображения в Сепию.
         /// </summary>
-        public void SepiaGamma ()
+        public void SepiaGamma()
         {
             //Для преобразования в Сепию сперва необходимо сделать изображение Черно-Белым.
             //Данный метод сам изменит состояние Свойства "Changed" на true, так что здесь оно не изменяется.
@@ -741,7 +741,7 @@ namespace Converter
             if (FastAlgorithm)
             {
                 BitmapData data = Image.LockBits(new Rectangle(0, 0, Image.Width, Image.Height), ImageLockMode.ReadWrite, PixelFormat.Format24bppRgb);
-                (Double, Double, Double) sepiaModifiers = (sepiaModR, sepiaModG, sepiaModB); 
+                (Double, Double, Double) sepiaModifiers = (sepiaModR, sepiaModG, sepiaModB);
                 Byte[] imageByteMap = new Byte[Image.Width * Image.Height * 3];
 
                 Marshal.Copy(data.Scan0, imageByteMap, 0, imageByteMap.Length);
@@ -782,7 +782,7 @@ namespace Converter
         /// Метод для преобразования изображения в Сепию.
         /// </summary>
         /// <param name="pathToSave">Абсолютный Путь, по которому будет сохранено изображение.</param>
-        public void SepiaGamma (String pathToSave)
+        public void SepiaGamma(String pathToSave)
         {
             SepiaGamma();
 
@@ -792,33 +792,90 @@ namespace Converter
         /// <summary>
         /// Метод для конвертации изображения в ASCii-формат.
         /// </summary>
-        public void ASCiiConvert ()
+        public void ASCiiConvert()
         {
-            ASCiiImage = new Char[image.Height][];
+            Char[] negativeAsciiSymbols = asciiSymbols.Reverse().ToArray();
+            ASCiiImage = new Char[Image.Height][];
+            ASCiiImage[0] = new Char[Image.Width];
 
-            for (int i = 0; i < image.Height; i++)
+            if (FastAlgorithm)
             {
-                ASCiiImage[i] = new Char[image.Width];
+                BitmapData data = Image.LockBits(new Rectangle(0, 0, Image.Width, Image.Height), ImageLockMode.ReadOnly, PixelFormat.Format24bppRgb);
+                Byte[] imageByteMap = new Byte[Image.Width * Image.Height * 3];
+                Int32 firstInd = 0;
+                Int32 secondInd = 0;
 
-                for (int j = 0; j < image.Width; j++)
+                Marshal.Copy(data.Scan0, imageByteMap, 0, imageByteMap.Length);
+
+                for (int i = 2; i < imageByteMap.Length; i += 3)
                 {
-                    Int32 index = (Int32)new Colour().GetIndex(image.GetPixel(j, i).R, 0, 255, 0, asciiSymbols.Length - 1);
+                    Int32 index = (Int32)new Colour().GetIndex(imageByteMap[i], 0, 255, 0, asciiSymbols.Length - 1);
 
-                    ASCiiImage[i][j] = asciiSymbols[index];
+                    if (secondInd == Image.Width)
+                    {
+                        firstInd++;
+                        secondInd = 0;
+
+                        asciiImage[firstInd] = new Char[Image.Width];
+                    }
+
+                    ASCiiImage[firstInd][secondInd] = asciiSymbols[index];
+
+                    secondInd++;
                 }
+
+                firstInd = 0;
+                secondInd = 0;
+
+                asciiNegativeImage = new Char[Image.Height][];
+                asciiNegativeImage[0] = new Char[Image.Width];
+
+                for (int i = 2; i < imageByteMap.Length; i += 3)
+                {
+                    Int32 index = (Int32)new Colour().GetIndex(imageByteMap[i], 0, 255, 0, negativeAsciiSymbols.Length - 1);
+
+                    if (secondInd == Image.Width)
+                    {
+                        firstInd++;
+                        secondInd = 0;
+
+                        asciiNegativeImage[firstInd] = new Char[Image.Width];
+                    }
+
+                    asciiNegativeImage[firstInd][secondInd] = negativeAsciiSymbols[index];
+
+                    secondInd++;
+                }
+
+                Image.UnlockBits(data);
             }
 
-            asciiNegativeImage = new Char[image.Height][];
-
-            for (int i = 0; i < image.Height; i++)
+            else
             {
-                asciiNegativeImage[i] = new Char[image.Width];
-
-                for (int j = 0; j < image.Width; j++)
+                for (int i = 0; i < image.Height; i++)
                 {
-                    Int32 index = (Int32)new Colour().GetIndex(image.GetPixel(j, i).R, 0, 255, 0, asciiSymbols.Length - 1);
+                    ASCiiImage[i] = new Char[image.Width];
 
-                    asciiNegativeImage[i][j] = asciiSymbols.Reverse().ToArray()[index];
+                    for (int j = 0; j < image.Width; j++)
+                    {
+                        Int32 index = (Int32)new Colour().GetIndex(image.GetPixel(j, i).R, 0, 255, 0, asciiSymbols.Length - 1);
+
+                        ASCiiImage[i][j] = asciiSymbols[index];
+                    }
+                }
+
+                asciiNegativeImage = new Char[image.Height][];
+
+                for (int i = 0; i < image.Height; i++)
+                {
+                    asciiNegativeImage[i] = new Char[image.Width];
+
+                    for (int j = 0; j < image.Width; j++)
+                    {
+                        Int32 index = (Int32)new Colour().GetIndex(image.GetPixel(j, i).R, 0, 255, 0, asciiSymbols.Length - 1);
+
+                        asciiNegativeImage[i][j] = asciiSymbols.Reverse().ToArray()[index];
+                    }
                 }
             }
         }
@@ -827,7 +884,7 @@ namespace Converter
         /// Метод для конвертации изображения в ASCii-формат.
         /// </summary>
         /// <param name="pathToSave">Путь, по которому будет сохранено изображение.</param>
-        public void ASCiiConvert (String pathToSave)
+        public void ASCiiConvert(String pathToSave)
         {
             ASCiiConvert();
 
@@ -837,7 +894,7 @@ namespace Converter
         /// <summary>
         /// Метод для вывода ASCii-изображения в Консоль.
         /// </summary>
-        public void ASCiiShow ()
+        public void ASCiiShow()
         {
             if (ASCiiImage != null)
             {
@@ -854,7 +911,7 @@ namespace Converter
         /// Метод для сохранения Нового Изображения.
         /// </summary>
         /// <param name="pathToSave">Путь, по которому необходимо сохранить новое изображение.</param>
-        public void SaveImage (String pathToSave)
+        public void SaveImage(String pathToSave)
         {
             String newSavePath;
 
@@ -906,7 +963,7 @@ namespace Converter
         /// Метод для сохранения ASCii-представления текущего изображения.
         /// </summary>
         /// <param name="pathToSave">Путь к сохраняемому файлу.</param>
-        public void SaveASCii (String pathToSave)
+        public void SaveASCii(String pathToSave)
         {
             if (ASCiiImage != null)
             {
@@ -969,7 +1026,7 @@ namespace Converter
         /// <summary>
         /// Метод для смены используемого алгоритма.
         /// </summary>
-        public void ChangeAlgorithm ()
+        public void ChangeAlgorithm()
         {
             FastAlgorithm = !FastAlgorithm;
         }
@@ -978,7 +1035,7 @@ namespace Converter
         /// Метод для приведения Измененного Изображения к оригинальному виду.
         /// </summary>
         /// <param name="updateASCii">Необязательный Параметр. Отвечает за дополнительное преобразование ASCii к оригинальному виду.</param>>
-        public void Reset (Bool updateASCii = false)
+        public void Reset(Bool updateASCii = false)
         {
             NewImage = Image;
             Changed = false;
